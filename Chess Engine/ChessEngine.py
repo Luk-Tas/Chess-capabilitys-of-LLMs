@@ -2,7 +2,7 @@ from stockfish import Stockfish
 
 class ChessEngine:
 
-    chess_level = ["beginner", "KIT_Professor"]
+    chess_level = ["Beginner", "KIT_Professor"]
 
     def __init__(self, engine_path):
         self.stockfish = Stockfish(engine_path)
