@@ -17,13 +17,11 @@ while not board.is_game_over():
     print(result)
     move = chess.Move.from_uci(result)
     board.push(move)
-    #print(engine.stockfish.get_parameters())
     engine.change_difficulty("KIT_Professor")
     result = engine.get_best_move(board.fen())
     print(result)
     move = chess.Move.from_uci(result)
     board.push(move)
-    #print(engine.stockfish.get_parameters())
 
 
 print(board.outcome().result())
