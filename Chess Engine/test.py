@@ -10,10 +10,11 @@ difficulty = "master"
 move1 = chess.Move.from_uci("d2d3")
 move2 = chess.Move.from_uci("g7g6")
 move3 = chess.Move.from_uci("a2a4")
+next_move = "a5"
 
 board.push(move1)
 board.push(move2)
-board.push(move3)
+# board.push(move3)
 
 # print(round(len(board.move_stack)/2))
 
@@ -27,15 +28,15 @@ print(board.move_stack)
 """
 
 BloomZAPI = AccessBloomZAPI()
-prompt = com.engine_to_llm_prob(board, difficulty)
+prompt = com.engine_to_llm_prob(board, difficulty, next_move)
 print(prompt)
 completion = BloomZAPI.create_prob(prompt)
-print(completion)
+# print(completion)
 tuple_list = com.extract_token_data(str(completion))
 print(tuple_list)
 string = ' a4'
 
-result = com.check_string_in_tuple_list(string, tuple_list)
+result = com.calculate_prob_sum_str(string, tuple_list)
 print(result)
 
 

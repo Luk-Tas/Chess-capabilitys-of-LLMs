@@ -34,12 +34,20 @@ class ComEngineLLM:
         prompt = self.__STYLE2_PROMPT1 + difficulty + self.__STYLE2_PROMPT2 + move_list
         return prompt
 
-    def engine_to_llm_prob(self, board: chess.Board, difficulty):
-        legal_moves = self.__extract_legal_moves(board)
+    def engine_to_llm_prob(self, board: chess.Board, difficulty, next_move: str):
+        prompt = ""
+        # legal_moves = self.__extract_legal_moves(board)
         temporary_board = chess.Board()
         move_list = temporary_board.variation_san(board.move_stack)
-        prompt = self.__STYLE3_PROMPT1 + legal_moves + self.__PROMPT_PARAGRAPH + self.__STYLE3_PROMPT2 + difficulty
+        # prompt = self.__STYLE3_PROMPT1 + legal_moves
+        prompt = prompt + self.__PROMPT_PARAGRAPH + self.__STYLE3_PROMPT2 + difficulty
         prompt = prompt + self.__STYLE3_PROMPT3 + move_list
+
+        if len(board.move_stack) % 2 == 0:
+            prompt = prompt + " " + str(int(len(board.move_stack)/2) + 1) + ". " + next_move
+        else:
+            prompt = prompt + " " + next_move
+
         return prompt
 
     def llm_to_engine(self, board: chess.Board, prompt: str, next_move: str):
@@ -83,21 +91,23 @@ class ComEngineLLM:
             raise ValueError("Lists must be of equal length")
         return [(tokens[i], token_logprobs[i]) for i in range(len(token_logprobs))]
 
-    def check_string_in_tuple_list(self, string, tuple_list):
+    def calculate_prob_sum_str(self, string: str, tuple_list):
         # Check if the string is in the first part of any tuple in the list
-        for tup in tuple_list:
-            if string == tup[0]:
-                return True
 
-        # Check if the string can be combined from the first parts of tuples in the list
-        for i in range(len(tuple_list)):
-            temp_str = tuple_list[i][0]
-            for j in range(len(tuple_list)):
-                if i == j:
-                    continue
-                temp_str += tuple_list[j][0]
-                if string == temp_str:
-                    return True
+        sorted_list = sorted(tuple_list, key=lambda x: len(x[0]), reverse=True)
 
-        # The string was not found in the list or could not be combined from the first parts of tuples in the list
-        return False
+        prefix = ""
+        temp_str = ""
+        prob_sum = 0
+
+        while len(prefix) < len(string):
+            test_str = copy.copy(prefix)
+            for i in range(len(sorted_list)):
+                temp_str = prefix + sorted_list[i][0]
+                if string.startswith(temp_str):
+                    prob_sum = prob_sum + sorted_list[i][1]
+                    prefix = temp_str
+            if test_str == prefix:
+                raise Exception
+
+        return prob_sum

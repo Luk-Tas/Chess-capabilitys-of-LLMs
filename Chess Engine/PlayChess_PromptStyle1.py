@@ -7,7 +7,7 @@ from BloomZ_API import AccessBloomZAPI
 
 # Enter your stockfish path
 engine = ChessEngine\
-    (r"C:\Users\Lukas\Desktop\Dokumente\Stockfish\stockfish_15.1_win_x64_avx2\stockfish_15.1_win_x64_avx2\stockfish-windows-2022-x86-64-avx2.exe")
+    (r"C:\Users\Lukas\Desktop\Ordner\Stockfish\stockfish_15.1_win_x64_avx2\stockfish-windows-2022-x86-64-avx2.exe")
 
 # Enter difficulty level, choose from "beginner" and "master"
 difficulty = "master"
@@ -21,7 +21,7 @@ white_wins = '1-0'
 black_wins = '0-1'
 draw = '1/2-1/2'
 sum_moves_played = 0
-EXPERIMENT_RUNS = 100
+EXPERIMENT_RUNS = 10
 
 
 engine.change_difficulty(difficulty)
@@ -45,8 +45,8 @@ for index in range(0, EXPERIMENT_RUNS):
             old_move_stack = copy.copy(board.move_stack)
             for x in range(0, 3):
                 try:
-                    print(com.engine_to_llm_style2(board, difficulty))
-                    prompt = com.engine_to_llm_style2(board, difficulty)
+                    print(com.engine_to_llm_style1(board, difficulty))
+                    prompt = com.engine_to_llm_style1(board, difficulty)
                     llm_answer = bloomZ.create_completion(prompt)
                     board = com.llm_to_engine(board, prompt, llm_answer)
                     break
@@ -69,8 +69,8 @@ for index in range(0, EXPERIMENT_RUNS):
             for x in range(0, 3):
                 try:
                     print(x)
-                    print(com.engine_to_llm_style2(board, difficulty))
-                    prompt = com.engine_to_llm_style2(board, difficulty)
+                    print(com.engine_to_llm_style1(board, difficulty))
+                    prompt = com.engine_to_llm_style1(board, difficulty)
                     llm_answer = bloomZ.create_completion(prompt)
                     board = com.llm_to_engine(board, prompt, llm_answer)
                     break
