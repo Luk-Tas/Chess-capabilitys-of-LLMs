@@ -1,3 +1,5 @@
+import copy
+
 import chess
 
 
@@ -17,7 +19,7 @@ class ComEngineLLM:
         return prompt
 
     def llm_to_engine(self, board: chess.Board, next_move: str):
-        old_move_stack = board.move_stack
+        old_move_stack = copy.copy(board.move_stack)
         print(old_move_stack)
         for x in range(self.__MAX_SAN_LENGTH, self.__MIN_SAN_LENGTH, self.__COUNT_DOWN_STEP):
             next_move = next_move[:x]

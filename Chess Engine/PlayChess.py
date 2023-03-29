@@ -1,3 +1,4 @@
+import copy
 import random
 import chess
 from ChessEngine import ChessEngine
@@ -5,7 +6,7 @@ from ComEngineLLM import ComEngineLLM
 
 # Enter your stockfish path
 engine = ChessEngine\
-    (r"C:\Users\Lukas\Desktop\Ordner\Stockfish\stockfish_15.1_win_x64_avx2\stockfish-windows-2022-x86-64-avx2.exe")
+    (r"C:\Users\Lukas\Desktop\Dokumente\Stockfish\stockfish_15.1_win_x64_avx2\stockfish_15.1_win_x64_avx2\stockfish-windows-2022-x86-64-avx2.exe")
 
 # Enter difficulty level
 difficulty = "beginner"
@@ -25,12 +26,11 @@ draw = '1/2-1/2'
 engine.change_difficulty(difficulty)
 
 # select who starts
-engine_start = True
-#engine_start = bool(random.getrandbits(1))
+engine_start = bool(random.getrandbits(1))
 
 if engine_start:
     while not board.is_game_over():
-        old_move_stack = board.move_stack
+        old_move_stack = copy.copy(board.move_stack)
         result = engine.get_best_move(board.fen())
         print(result)
         move = chess.Move.from_uci(result)
@@ -58,6 +58,7 @@ if engine_start:
             draws = draws + increment
 else:
     while not board.is_game_over():
+        old_move_stack = copy.copy(board.move_stack)
         for x in range(0, 9):
             try:
                 print(com.engine_to_llm(board, difficulty))
@@ -70,7 +71,6 @@ else:
         if old_move_stack == board.move_stack:
             engine_wins = engine_wins + increment
             break
-        old_move_stack = board.move_stack
         result = engine.get_best_move(board.fen())
         print(result)
         move = chess.Move.from_uci(result)
