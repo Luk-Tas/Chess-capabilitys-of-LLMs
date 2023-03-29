@@ -12,10 +12,6 @@ engine = ChessEngine\
 # Enter difficulty level, choose from "beginner" and "master"
 difficulty = "master"
 
-board = chess.Board()
-com = ComEngineLLM()
-bloomZ = AccessBloomZAPI()
-
 engine_wins = 0
 engine_wins_by_wrong_move = 0
 llm_wins = 0
@@ -24,6 +20,8 @@ increment = 1
 white_wins = '1-0'
 black_wins = '0-1'
 draw = '1/2-1/2'
+sum_moves_played = 0
+EXPERIMENT_RUNS = 50
 
 
 engine.change_difficulty(difficulty)
@@ -31,7 +29,12 @@ engine.change_difficulty(difficulty)
 # select who starts
 # engine_start = True
 engine_start = bool(random.getrandbits(1))
-for index in range(0,10):
+for index in range(0, EXPERIMENT_RUNS):
+
+    board = chess.Board()
+    com = ComEngineLLM()
+    bloomZ = AccessBloomZAPI()
+
     if engine_start:
         while not board.is_game_over():
             # print(old_move_stack)
@@ -42,8 +45,8 @@ for index in range(0,10):
             old_move_stack = copy.copy(board.move_stack)
             for x in range(0, 3):
                 try:
-                    print(com.engine_to_llm(board, difficulty))
-                    prompt = com.engine_to_llm(board, difficulty)
+                    print(com.engine_to_llm_style2(board, difficulty))
+                    prompt = com.engine_to_llm_style2(board, difficulty)
                     llm_answer = bloomZ.create_completion(prompt)
                     board = com.llm_to_engine(board, prompt, llm_answer)
                     break
@@ -66,8 +69,8 @@ for index in range(0,10):
             for x in range(0, 3):
                 try:
                     print(x)
-                    print(com.engine_to_llm(board, difficulty))
-                    prompt = com.engine_to_llm(board, difficulty)
+                    print(com.engine_to_llm_style2(board, difficulty))
+                    prompt = com.engine_to_llm_style2(board, difficulty)
                     llm_answer = bloomZ.create_completion(prompt)
                     board = com.llm_to_engine(board, prompt, llm_answer)
                     break
@@ -88,6 +91,10 @@ for index in range(0,10):
                 llm_wins = llm_wins + increment
             elif board.outcome().result() == draw:
                 draws = draws + increment
+    print("game no: " + str(index) + " is done.")
+    sum_moves_played = sum_moves_played + round(len(board.move_stack)/2)
 
+average_played_moves = sum_moves_played/EXPERIMENT_RUNS
 print("engine_wins: " + str(engine_wins) + ", ", "engine_wins_by_wrong_move: " + str(engine_wins_by_wrong_move)
-      + ", ", "llm_wins: " + str(llm_wins) + ", ", "draws: " + str(draws))
+      + ", ", "llm_wins: " + str(llm_wins) + ", ", "draws: " + str(draws),
+      "average_played_moves: " + str(average_played_moves))

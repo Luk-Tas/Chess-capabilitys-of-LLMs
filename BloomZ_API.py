@@ -15,5 +15,7 @@ class AccessBloomZAPI:
             temperature=0.7,
             echo=True,
             top_p=0.95,
+            logprobs=1
         )
         return completion.choices[0].text
+    # def create_prob(self, prompt: str):
