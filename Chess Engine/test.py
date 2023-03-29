@@ -1,6 +1,7 @@
 from ComEngineLLM import ComEngineLLM
 from BloomZ_API import AccessBloomZAPI
 import chess
+import re
 
 board = chess.Board()
 com = ComEngineLLM()
@@ -14,9 +15,9 @@ board.push(move1)
 board.push(move2)
 board.push(move3)
 
-print(round(len(board.move_stack)/2))
+# print(round(len(board.move_stack)/2))
 
-print(com.engine_to_llm_style1(board, difficulty))
+# print(com.engine_to_llm_style1(board, difficulty))
 
 """
 next_move = "e4 Your turn: 2. b3 Nc6 A chess master would play the"
@@ -26,12 +27,20 @@ print(board.move_stack)
 """
 
 BloomZAPI = AccessBloomZAPI()
-prompt = com.engine_to_llm_style1(board, difficulty)
-completion = BloomZAPI.create_completion(prompt)
+prompt = com.engine_to_llm_prob(board, difficulty)
+print(prompt)
+completion = BloomZAPI.create_prob(prompt)
 print(completion)
+tuple_list = com.extract_token_data(str(completion))
+print(tuple_list)
+string = ' a4'
 
-board = com.llm_to_engine(board, prompt, completion)
-print(board.move_stack)
+result = com.check_string_in_tuple_list(string, tuple_list)
+print(result)
+
+
+# board = com.llm_to_engine(board, prompt, completion)
+# print(board.move_stack)
 
 
 

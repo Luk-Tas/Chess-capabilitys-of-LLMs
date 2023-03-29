@@ -21,7 +21,7 @@ white_wins = '1-0'
 black_wins = '0-1'
 draw = '1/2-1/2'
 sum_moves_played = 0
-EXPERIMENT_RUNS = 50
+EXPERIMENT_RUNS = 100
 
 
 engine.change_difficulty(difficulty)

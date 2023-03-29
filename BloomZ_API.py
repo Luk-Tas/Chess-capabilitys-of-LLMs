@@ -15,7 +15,18 @@ class AccessBloomZAPI:
             temperature=0.7,
             echo=True,
             top_p=0.95,
-            logprobs=1
         )
         return completion.choices[0].text
-    # def create_prob(self, prompt: str):
+
+    def create_prob(self, prompt: str):
+        probs = openai.Completion.create(
+            model="xxx",
+            prompt=prompt,
+            max_tokens=0,
+            min_tokens=0,
+            temperature=1,
+            echo=True,
+            top_p=0.95,
+            logprobs=1
+        )
+        return probs
