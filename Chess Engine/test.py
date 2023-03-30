@@ -1,7 +1,6 @@
 from ComEngineLLM import ComEngineLLM
 from BloomZ_API import AccessBloomZAPI
 import chess
-import re
 
 board = chess.Board()
 com = ComEngineLLM()
@@ -14,7 +13,11 @@ next_move = "a5"
 
 board.push(move1)
 board.push(move2)
-# board.push(move3)
+board.push(move3)
+board.push_san(next_move)
+print(board.move_stack)
+
+print(com.engine_to_llm_prob(board, difficulty, next_move))
 
 # print(round(len(board.move_stack)/2))
 

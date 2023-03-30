@@ -22,6 +22,7 @@ black_wins = '0-1'
 draw = '1/2-1/2'
 sum_moves_played = 0
 EXPERIMENT_RUNS = 10
+experiment_summery = []
 
 
 engine.change_difficulty(difficulty)
@@ -52,7 +53,7 @@ for index in range(0, EXPERIMENT_RUNS):
                     break
                 except chess.InvalidMoveError:
                     pass
-            if old_move_stack == board.move_stack:
+            if (old_move_stack == board.move_stack) & (not board.is_game_over()):
                 engine_wins = engine_wins + increment
                 engine_wins_by_wrong_move = engine_wins_by_wrong_move + increment
                 break
@@ -76,7 +77,7 @@ for index in range(0, EXPERIMENT_RUNS):
                     break
                 except chess.InvalidMoveError:
                     pass
-            if old_move_stack == board.move_stack:
+            if (old_move_stack == board.move_stack) & (not board.is_game_over()):
                 engine_wins = engine_wins + increment
                 engine_wins_by_wrong_move = engine_wins_by_wrong_move + increment
                 break
@@ -91,10 +92,13 @@ for index in range(0, EXPERIMENT_RUNS):
                 llm_wins = llm_wins + increment
             elif board.outcome().result() == draw:
                 draws = draws + increment
+    experiment_summery.append(board.move_stack)
     print("game no: " + str(index) + " is done.")
-    sum_moves_played = sum_moves_played + round(len(board.move_stack)/2)
+    #sum_moves_played = sum_moves_played + round(len(board.move_stack)/2)
 
 average_played_moves = sum_moves_played/EXPERIMENT_RUNS
 print("engine_wins: " + str(engine_wins) + ", ", "engine_wins_by_wrong_move: " + str(engine_wins_by_wrong_move)
       + ", ", "llm_wins: " + str(llm_wins) + ", ", "draws: " + str(draws),
       "average_played_moves: " + str(average_played_moves))
+
+print(experiment_summery)

@@ -36,7 +36,8 @@ class ComEngineLLM:
 
     def engine_to_llm_prob(self, board: chess.Board, difficulty, next_move: str):
         prompt = ""
-        # legal_moves = self.__extract_legal_moves(board)
+        legal_moves = self.__extract_legal_moves(board)
+        # print(legal_moves)
         temporary_board = chess.Board()
         move_list = temporary_board.variation_san(board.move_stack)
         # prompt = self.__STYLE3_PROMPT1 + legal_moves
@@ -44,9 +45,9 @@ class ComEngineLLM:
         prompt = prompt + self.__STYLE3_PROMPT3 + move_list
 
         if len(board.move_stack) % 2 == 0:
-            prompt = prompt + " " + str(int(len(board.move_stack)/2) + 1) + ". " + next_move
+            prompt = prompt + " " + str(int(len(board.move_stack)/2) + 1) + "." + next_move
         else:
-            prompt = prompt + " " + next_move
+            prompt = prompt + next_move
 
         return prompt
 
@@ -108,6 +109,11 @@ class ComEngineLLM:
                     prob_sum = prob_sum + sorted_list[i][1]
                     prefix = temp_str
             if test_str == prefix:
-                raise Exception
+                raise ValueError("String cant be combined from tokens")
 
-        return prob_sum
+        return [string, prob_sum]
+
+    def get_legal_moves_list(self, board: chess.Board):
+        legal_moves = self.__extract_legal_moves(board)
+        legal_moves_list = legal_moves.split(", ")
+        return legal_moves_list
